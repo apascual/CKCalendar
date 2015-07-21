@@ -55,6 +55,9 @@ typedef enum {
 @property (nonatomic, strong) UIColor *dayOfWeekTextColor;
 @property (nonatomic, strong) UIFont *dateFont;
 
+@property (nonatomic, strong) UIImage *leftImage;
+@property (nonatomic, strong) UIImage *rightImage;
+
 - (void)setMonthButtonColor:(UIColor *)color;
 - (void)setInnerBorderColor:(UIColor *)color;
 - (void)setDayOfWeekBottomColor:(UIColor *)bottomColor topColor:(UIColor *)topColor;

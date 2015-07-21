@@ -214,14 +214,14 @@
     self.titleLabel = titleLabel;
 
     UIButton *prevButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [prevButton setImage:[UIImage imageNamed:@"left_arrow.png"] forState:UIControlStateNormal];
+    [prevButton setImage:self.leftImage forState:UIControlStateNormal];
     prevButton.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleRightMargin;
     [prevButton addTarget:self action:@selector(_moveCalendarToPreviousMonth) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:prevButton];
     self.prevButton = prevButton;
 
     UIButton *nextButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [nextButton setImage:[UIImage imageNamed:@"right_arrow.png"] forState:UIControlStateNormal];
+    [nextButton setImage:self.rightImage forState:UIControlStateNormal];
     nextButton.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleLeftMargin;
     [nextButton addTarget:self action:@selector(_moveCalendarToNextMonth) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:nextButton];
