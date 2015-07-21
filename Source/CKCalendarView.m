@@ -183,6 +183,14 @@
     return [self initWithStartDay:firstDay frame:CGRectMake(0, 0, 320, 320)];
 }
 
+- (void)setLeftImage:(UIImage *)leftImage {
+    [self.prevButton setImage:leftImage forState:UIControlStateNormal];
+}
+
+- (void)setRightImage:(UIImage *)rightImage {
+    [self.nextButton setImage:rightImage forState:UIControlStateNormal];
+}
+
 - (void)_init:(CKCalendarStartDay)firstDay {
     self.calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
     [self.calendar setLocale:[NSLocale currentLocale]];
@@ -214,14 +222,14 @@
     self.titleLabel = titleLabel;
 
     UIButton *prevButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [prevButton setImage:self.leftImage forState:UIControlStateNormal];
+//    [prevButton setImage:self.leftImage forState:UIControlStateNormal];
     prevButton.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleRightMargin;
     [prevButton addTarget:self action:@selector(_moveCalendarToPreviousMonth) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:prevButton];
     self.prevButton = prevButton;
 
     UIButton *nextButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [nextButton setImage:self.rightImage forState:UIControlStateNormal];
+//    [nextButton setImage:self.rightImage forState:UIControlStateNormal];
     nextButton.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleLeftMargin;
     [nextButton addTarget:self action:@selector(_moveCalendarToNextMonth) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:nextButton];
