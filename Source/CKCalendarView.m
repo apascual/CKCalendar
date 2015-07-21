@@ -21,7 +21,7 @@
 #import "CKCalendarView.h"
 
 #define BUTTON_MARGIN 4
-#define CALENDAR_MARGIN 5
+#define CALENDAR_MARGIN 0
 #define TOP_HEIGHT 44
 #define DAYS_HEADER_HEIGHT 22
 #define DEFAULT_CELL_WIDTH 43
@@ -70,10 +70,44 @@
 @property (nonatomic, strong) NSDate *date;
 @property (nonatomic, strong) CKDateItem *dateItem;
 @property (nonatomic, strong) NSCalendar *calendar;
+@property (nonatomic, strong) NSNumber *orders;
+
+@property (nonatomic, strong) UILabel *detailLabel;
 
 @end
 
 @implementation DateButton
+
+- (void)customInit {
+    self.detailLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.frame.size.width/2, 0.0f, self.frame.size.width/3, self.frame.size.height/3)];
+    self.detailLabel.font = [UIFont boldSystemFontOfSize:8.0f];
+    self.detailLabel.textAlignment = NSTextAlignmentRight;
+    [self addSubview:self.detailLabel];
+}
+
+- (instancetype)init {
+    if(self = [super init]) {
+        [self customInit];
+    }
+    
+    return self;
+}
+
+- (id)initWithCoder:(NSCoder *)aDecoder {
+    if(self = [super initWithCoder:aDecoder]) {
+        [self customInit];
+    }
+    
+    return self;
+}
+
+- (instancetype)initWithFrame:(CGRect)frame {
+    if(self = [super initWithFrame:frame]) {
+        [self customInit];
+    }
+    
+    return self;
+}
 
 - (void)setDate:(NSDate *)date {
     _date = date;
@@ -85,6 +119,20 @@
     }
 }
 
+- (void)setOrders:(NSNumber *)orders {
+    _orders = orders;
+    if(orders) {
+        self.detailLabel.text = [NSString stringWithFormat:@"(%@)", orders];
+    } else {
+        self.detailLabel.text = @"";
+    }
+}
+
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    self.detailLabel.frame =CGRectMake (self.frame.size.width/2, 0.0f, (self.frame.size.width-2)/2, self.frame.size.height/3);
+}
+
 @end
 
 @implementation CKDateItem
@@ -92,10 +140,12 @@
 - (id)init {
     self = [super init];
     if (self) {
-        self.backgroundColor = UIColorFromRGB(0xF2F2F2);
-        self.selectedBackgroundColor = UIColorFromRGB(0x88B6DB);
-        self.textColor = UIColorFromRGB(0x393B40);
-        self.selectedTextColor = UIColorFromRGB(0xF2F2F2);
+        self.backgroundColor = [UIColor whiteColor];//UIColorFromRGB(0xF2F2F2);
+        self.selectedBackgroundColor = [UIColor colorWithRed:204.0f/255.0f green:35.0f/255.0f blue:42.0f/255.0f alpha:1.0f]; //UIColorFromRGB(0x88B6DB);
+        self.textColor = [UIColor blackColor]; //UIColorFromRGB(0x393B40);
+        self.selectedTextColor = [UIColor whiteColor]; //UIColorFromRGB(0xF2F2F2);
+        self.detailTextColor = [UIColor blackColor];
+        self.detailFutureTextColor = [UIColor colorWithRed:43.0f/255.0f green:159.0f/255.0f blue:78.0f/255.0f alpha:1.0f];
     }
     return self;
 }
@@ -147,11 +197,11 @@
     self.onlyShowCurrentMonth = YES;
     self.adaptHeightToNumberOfWeeksInMonth = YES;
 
-    self.layer.cornerRadius = 6.0f;
+    //self.layer.cornerRadius = 6.0f;
 
     UIView *highlight = [[UIView alloc] initWithFrame:CGRectZero];
     highlight.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.2];
-    highlight.layer.cornerRadius = 6.0f;
+    //highlight.layer.cornerRadius = 6.0f;
     [self addSubview:highlight];
     self.highlight = highlight;
 
@@ -182,7 +232,7 @@
     calendarContainer.layer.borderWidth = 1.0f;
     calendarContainer.layer.borderColor = [UIColor blackColor].CGColor;
     calendarContainer.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleWidth;
-    calendarContainer.layer.cornerRadius = 4.0f;
+    //calendarContainer.layer.cornerRadius = 4.0f;
     calendarContainer.clipsToBounds = YES;
     [self addSubview:calendarContainer];
     self.calendarContainer = calendarContainer;
@@ -298,6 +348,7 @@
         DateButton *dateButton = [self.dateButtons objectAtIndex:dateButtonPosition];
 
         dateButton.date = date;
+        
         CKDateItem *item = [[CKDateItem alloc] init];
         if ([self _dateIsToday:dateButton.date]) {
             item.textColor = UIColorFromRGB(0xF2F2F2);
@@ -309,14 +360,20 @@
         if (self.delegate && [self.delegate respondsToSelector:@selector(calendar:configureDateItem:forDate:)]) {
             [self.delegate calendar:self configureDateItem:item forDate:date];
         }
-
+        
         if (self.selectedDate && [self date:self.selectedDate isSameDayAsDate:date]) {
             [dateButton setTitleColor:item.selectedTextColor forState:UIControlStateNormal];
             dateButton.backgroundColor = item.selectedBackgroundColor;
+            
+            dateButton.detailLabel.textColor = item.selectedTextColor;
         } else {
             [dateButton setTitleColor:item.textColor forState:UIControlStateNormal];
             dateButton.backgroundColor = item.backgroundColor;
+            
+            dateButton.detailLabel.textColor = ([[NSDate date] compare:date] == NSOrderedAscending)?item.detailFutureTextColor:item.detailTextColor;
         }
+        
+        dateButton.contentEdgeInsets = UIEdgeInsetsMake(5.0f, 0.0f, 0.0f, 0.0f);
 
         dateButton.frame = [self _calculateDayCellFrame:date];
 

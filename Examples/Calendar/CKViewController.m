@@ -23,18 +23,25 @@
 
         self.dateFormatter = [[NSDateFormatter alloc] init];
         [self.dateFormatter setDateFormat:@"dd/MM/yyyy"];
-        self.minimumDate = [self.dateFormatter dateFromString:@"20/09/2012"];
+//        self.minimumDate = [self.dateFormatter dateFromString:@"20/09/2012"];
+//
+//        self.disabledDates = @[
+//                [self.dateFormatter dateFromString:@"05/01/2013"],
+//                [self.dateFormatter dateFromString:@"06/01/2013"],
+//                [self.dateFormatter dateFromString:@"07/01/2013"]
+//        ];
 
-        self.disabledDates = @[
-                [self.dateFormatter dateFromString:@"05/01/2013"],
-                [self.dateFormatter dateFromString:@"06/01/2013"],
-                [self.dateFormatter dateFromString:@"07/01/2013"]
-        ];
-
+        
+        calendar.backgroundColor = [UIColor colorWithRed:43.0f/255.0f green:159.0f/255.0f blue:78.0f/255.0f alpha:1.0f];
+//        calendar.selectedBackgroundColor = [UIColor redColor];
+//        calendar.textColor =;
+//        @property (nonatomic, strong) UIColor *selectedTextColor;
+        
+        
         calendar.onlyShowCurrentMonth = NO;
         calendar.adaptHeightToNumberOfWeeksInMonth = YES;
 
-        calendar.frame = CGRectMake(10, 10, 300, 320);
+        calendar.frame = CGRectMake(10, 10, 295, 320);
         [self.view addSubview:calendar];
 
         self.dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, CGRectGetMaxY(calendar.frame) + 4, self.view.bounds.size.width, 24)];
@@ -105,13 +112,7 @@
 }
 
 - (BOOL)calendar:(CKCalendarView *)calendar willChangeToMonth:(NSDate *)date {
-    if ([date laterDate:self.minimumDate] == date) {
-        self.calendar.backgroundColor = [UIColor blueColor];
-        return YES;
-    } else {
-        self.calendar.backgroundColor = [UIColor redColor];
-        return NO;
-    }
+    return YES;
 }
 
 - (void)calendar:(CKCalendarView *)calendar didLayoutInRect:(CGRect)frame {
