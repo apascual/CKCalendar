@@ -43,6 +43,9 @@ typedef enum {
 
 @property (nonatomic, readonly) NSArray *datesShowing;
 
+// Dictionary with NSString date as key and NSNumber as value
+@property (nonatomic, strong) NSDictionary *itemsPerDay;
+
 @property (nonatomic) BOOL onlyShowCurrentMonth;
 @property (nonatomic) BOOL adaptHeightToNumberOfWeeksInMonth;
 

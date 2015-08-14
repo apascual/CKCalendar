@@ -121,7 +121,7 @@
 
 - (void)setOrders:(NSNumber *)orders {
     _orders = orders;
-    if(orders) {
+    if(orders != nil && orders.integerValue != 0) {
         self.detailLabel.text = [NSString stringWithFormat:@"(%@)", orders];
     } else {
         self.detailLabel.text = @"";
@@ -357,6 +357,12 @@
 
         dateButton.date = date;
         
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        dateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
+        dateFormatter.dateFormat = @"yyyy-MM-dd";
+        NSString *dateStr = [dateFormatter stringFromDate:date];
+        dateButton.orders = [self.itemsPerDay objectForKey:dateStr];
+        
         CKDateItem *item = [[CKDateItem alloc] init];
         if ([self _dateIsToday:dateButton.date]) {
             item.textColor = UIColorFromRGB(0xF2F2F2);
@@ -438,6 +444,11 @@
         }
     }
     return dates;
+}
+
+- (void)setItemsPerDay:(NSDictionary *)itemsPerDay {
+    _itemsPerDay = itemsPerDay;
+    [self setNeedsLayout];
 }
 
 - (void)setMonthShowing:(NSDate *)aMonthShowing {
