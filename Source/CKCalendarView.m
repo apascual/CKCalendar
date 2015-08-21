@@ -80,7 +80,6 @@
 
 - (void)customInit {
     self.detailLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.frame.size.width/2, 0.0f, self.frame.size.width/3, self.frame.size.height/3)];
-    self.detailLabel.font = [UIFont boldSystemFontOfSize:8.0f];
     self.detailLabel.textAlignment = NSTextAlignmentRight;
     [self addSubview:self.detailLabel];
 }
@@ -303,6 +302,10 @@
 - (void)layoutSubviews {
     [super layoutSubviews];
 
+    if(self.titleHeight == 0.0f) {
+        self.titleHeight = TOP_HEIGHT;
+    }
+    
     CGFloat containerWidth = self.bounds.size.width - (CALENDAR_MARGIN * 2);
     self.cellWidth = (floorf(containerWidth / 7.0)) - CELL_BORDER_WIDTH;
 
@@ -313,15 +316,15 @@
     CGFloat containerHeight = (numberOfWeeksToShow * (self.cellWidth + CELL_BORDER_WIDTH) + DAYS_HEADER_HEIGHT);
 
     CGRect newFrame = self.frame;
-    newFrame.size.height = containerHeight + CALENDAR_MARGIN + TOP_HEIGHT;
+    newFrame.size.height = containerHeight + CALENDAR_MARGIN + self.titleHeight;
     self.frame = newFrame;
 
     self.highlight.frame = CGRectMake(1, 1, self.bounds.size.width - 2, 1);
 
     self.titleLabel.text = [self.dateFormatter stringFromDate:_monthShowing];
-    self.titleLabel.frame = CGRectMake(0, 0, self.bounds.size.width, TOP_HEIGHT);
-    self.prevButton.frame = CGRectMake(BUTTON_MARGIN, BUTTON_MARGIN, 48, 38);
-    self.nextButton.frame = CGRectMake(self.bounds.size.width - 48 - BUTTON_MARGIN, BUTTON_MARGIN, 48, 38);
+    self.titleLabel.frame = CGRectMake(0, 0, self.bounds.size.width, self.titleHeight);
+    self.prevButton.frame = CGRectMake(BUTTON_MARGIN, BUTTON_MARGIN, 48, self.titleHeight-2*BUTTON_MARGIN);
+    self.nextButton.frame = CGRectMake(self.bounds.size.width - 48 - BUTTON_MARGIN, BUTTON_MARGIN, 48, self.titleHeight-2*BUTTON_MARGIN);
 
     self.calendarContainer.frame = CGRectMake(CALENDAR_MARGIN, CGRectGetMaxY(self.titleLabel.frame), containerWidth, containerHeight);
     self.daysHeader.frame = CGRectMake(0, 0, self.calendarContainer.frame.size.width, DAYS_HEADER_HEIGHT);
@@ -503,6 +506,8 @@
 
     [self setDateFont:[UIFont boldSystemFontOfSize:16.0f]];
     [self setDateBorderColor:UIColorFromRGB(0xDAE1E6)];
+    
+    [self setDateDetailFont:[UIFont boldSystemFontOfSize:8.0f]];
 }
 
 - (CGRect)_calculateDayCellFrame:(NSDate *)date {
@@ -614,6 +619,15 @@
 }
 - (UIFont *)dateFont {
     return (self.dateButtons.count > 0) ? ((DateButton *)[self.dateButtons lastObject]).titleLabel.font : nil;
+}
+
+- (void)setDateDetailFont:(UIFont *)font {
+    for (DateButton *dateButton in self.dateButtons) {
+        dateButton.detailLabel.font = font;
+    }
+}
+- (UIFont *)dateDetailFont {
+    return (self.dateButtons.count > 0) ? ((DateButton *)[self.dateButtons lastObject]).detailLabel.font : nil;
 }
 
 - (void)setDateBorderColor:(UIColor *)color {
